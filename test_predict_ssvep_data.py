@@ -14,6 +14,22 @@ it with the EEG data contained in the "data" dictionary. A Hilbert transform ext
 the envelope and the event types are ploted on a single grapth. As a final step, the power spectrum of the raw EEG , filtered and 
 envelope is ploted for the 'Oz" and 'Fz' EEG channels.
 """
+
+
+# Inport the necessry modules
+import os
+import sys
+import matplotlib.pyplot as plt
+import import_ssvep_data
+import filter_ssvep_data
+
+#Close previosly drawn plots
+plt.close('all')
+
+#Build data file string
+data_directory = './SsvepData/'
+subject=2
+
 #%%
 #PartA: Generate Predictions
 
