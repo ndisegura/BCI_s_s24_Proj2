@@ -51,9 +51,9 @@ def generate_predicted_labels(eeg_epochs_fft, fft_frequencies):
 
         # Select the predicted frequency based on the higher amplitude
         if any(amplitudes_at_target_freqs[0] > amplitudes_at_target_freqs[1]):
-            predicted_label = 12
+            predicted_label = '12hz'
         else:
-            predicted_label = 15
+            predicted_label = '15hz'
 
         # Append the predicted label to the list
         predicted_labels.append(predicted_label)

@@ -35,9 +35,9 @@ subject = 2
 data = imp.load_ssvep_data(subject, data_directory)
 
 # Epoch subject data
-# epoch_start_time =
-# epoch_end_time =
-eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data)
+epoch_start_time =0
+epoch_end_time =20
+eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data,epoch_start_time,epoch_end_time)
 
 # Get epoched fft data
 fs = data['fs']
@@ -49,23 +49,10 @@ print(predicted_labels)
 
 
 # PartB: Calculate Accuracy and ITR
-#Use synthetic data and temp values for now.for now
 
-#load data
-data=import_ssvep_data.load_ssvep_data(subject,data_directory)
 event_types=data['event_types']
-#Create synthetic data
 
-predicted_event=event_types.copy() #Start with an exact copy
-#change 5 random entries
-for i in range(10):
-    rand_index=np.random.randint(0,19)
-    #print(rand_index)
-    #print(f'event types:{event_types}')
-    #print(f'event predicted:{predicted_event}')
-    predicted_event[i]=predicted_event[rand_index]
-
-accuracy,ITR=predict_ssvep_data.get_accuracy_ITR(data,event_types,predicted_event)
+accuracy,ITR=prd.get_accuracy_ITR(data,event_types,predicted_labels)
 
 
 # PartC: Loop Through Epoch Limits
