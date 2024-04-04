@@ -22,6 +22,8 @@ import sys
 import matplotlib.pyplot as plt
 import import_ssvep_data
 import filter_ssvep_data
+import predict_ssvep_data
+import numpy as np
 
 #Close previosly drawn plots
 plt.close('all')
@@ -36,6 +38,23 @@ subject=2
 
 #%%
 #PartB: Calculate Accuracy and ITR  
+#Use synthetic data and temp values for now.for now
+
+#load data
+data=import_ssvep_data.load_ssvep_data(subject,data_directory)
+event_types=data['event_types']
+#Create synthetic data
+
+predicted_event=event_types.copy() #Start with an exact copy
+#change 5 random entries
+for i in range(10):
+    rand_index=np.random.randint(0,19)
+    #print(rand_index)
+    #print(f'event types:{event_types}')
+    #print(f'event predicted:{predicted_event}')
+    predicted_event[i]=predicted_event[rand_index]
+
+accuracy,ITR=predict_ssvep_data.get_accuracy_ITR(data,event_types,predicted_event)
 
 
 #%%

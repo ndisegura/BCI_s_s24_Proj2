@@ -20,3 +20,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import import_ssvep_data
 
+
+def get_accuracy_ITR(data,event_types,predicted_event):
+    
+    N=2 #There are only 2 clases
+    #Compute accuracy
+    P=(event_types==predicted_event).sum()/len(predicted_event)
+    ITR_trial=np.log2(N) + P* np.log2(P) + (1-P) * np.log2 ((1-P)/(N-1)) #bits per trial
+    
+    #Compute overall time from Data 
+    eeg=data['eeg']
+    fs=data['fs']
+    trial_time=len(eeg[0])*1/fs
+    trial_count=len(predicted_event)
+    ITR_second=ITR_trial*trial_count/trial_time
+    return P,ITR_second
+    
