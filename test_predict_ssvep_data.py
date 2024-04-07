@@ -28,7 +28,7 @@ plt.close('all')
 # Build data file string
 data_directory = './SsvepData/'
 subject = 2
-
+#%%
 # PartA: Generate Predictions
 
 # Load subject data
@@ -37,25 +37,30 @@ data = imp.load_ssvep_data(subject, data_directory)
 # Epoch subject data
 epoch_start_time =0
 epoch_end_time =20
-eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data,epoch_start_time,epoch_end_time)
+#eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data,epoch_start_time,epoch_end_time)
 
-# Get epoched fft data
-fs = data['fs']
-eeg_epochs_fft, fft_frequencies = imp.get_frequency_spectrum(eeg_epochs, fs)
+# # Get epoched fft data
+# fs = data['fs']
+# eeg_epochs_fft, fft_frequencies = imp.get_frequency_spectrum(eeg_epochs, fs)
 
 # Generate predicted labels
-predicted_labels = prd.generate_predicted_labels(eeg_epochs_fft, fft_frequencies)
+#Changed function argument so that we can reuse this function in part C. Also added "channel" argument. Need to fix functin to handle multiple channel. Using just one for now
+predicted_labels = prd.generate_predicted_labels(data,epoch_start_time,epoch_end_time, 'Oz') 
+
 print(predicted_labels)
 
-
+#%%
 # PartB: Calculate Accuracy and ITR
 
 event_types=data['event_types']
 
 accuracy,ITR=prd.get_accuracy_ITR(data,event_types,predicted_labels)
+print(accuracy)
+print(ITR)
 
-
+#%%
 # PartC: Loop Through Epoch Limits
+accuracy_matrix,ITR_matrix=prd.loop_epoch_limits(data, epoch_start_time_limit=0, epoch_end_time_limit=20, step=1.0, channel='Oz') 
 
 
 # PartD: Plot results
