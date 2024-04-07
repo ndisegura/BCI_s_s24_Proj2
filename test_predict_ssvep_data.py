@@ -27,7 +27,7 @@ plt.close('all')
 
 # Build data file string
 data_directory = './SsvepData/'
-subject = 2
+subject = 1
 #%%
 # PartA: Generate Predictions
 
@@ -60,12 +60,16 @@ print(ITR)
 
 #%%
 # PartC: Loop Through Epoch Limits
-accuracy_matrix,ITR_matrix=prd.loop_epoch_limits(data, epoch_start_time_limit=0, epoch_end_time_limit=20, step=1.0, channel='Oz') 
+accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=20, step=2.0, channel='Oz') 
+print(accuracy_matrix)
+print(ITR_matrix)
 
-
+#%%
 # PartD: Plot results
 
+prd.generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time)
 
+#%%
 # PartE: Create Predictor Histogram
 
 
