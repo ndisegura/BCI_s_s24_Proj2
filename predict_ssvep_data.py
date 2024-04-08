@@ -95,6 +95,7 @@ def generate_predicted_labels(data,epoch_start_time,epoch_end_time, channel='Oz'
 
     return predicted_labels
 
+
 def get_accuracy_ITR(data,event_types,predicted_event):
     """
     Function to calculate accuracy and Information Transfer Rate (ITR).
@@ -123,6 +124,7 @@ def get_accuracy_ITR(data,event_types,predicted_event):
     trial_count=len(predicted_event)
     ITR_second=ITR_trial*trial_count/trial_time
     return P,ITR_second
+
 
 def loop_epoch_limits(data,epoch_start_time_limit=0, epoch_end_time_limit=20, step=0.1, channel='Oz'):
     """
@@ -174,6 +176,7 @@ def loop_epoch_limits(data,epoch_start_time_limit=0, epoch_end_time_limit=20, st
             
     return accuracy_matrix[::-1],ITR_matrix[::-1],loop_epoch_time
 
+
 def generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time):
     """
     Generate pseudocolor plots for accuracy and ITR at various epoch limits
@@ -208,7 +211,61 @@ def generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time):
     plt.tight_layout()
     
     return
-    
+
+
+def plot_predictor_histogram(data, epoch_start_time, epoch_end_time, channel='Oz'):
+    """
+    Plot predictor histogram showing the distribution of predictor values for each trial type.
+
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing EEG data.
+    epoch_start_time : float
+        Start time of the epoch in seconds.
+    epoch_end_time : float
+        End time of the epoch in seconds.
+    channel : str, optional
+        Name of the EEG channel. Default is 'Oz'.
+    """
+    # Epoch Data
+    eeg_epochs, _, _ = imp.epoch_ssvep_data(data, epoch_start_time, epoch_end_time)
+
+    # Get epoched fft data
+    fs = data['fs']
+    eeg_epochs_fft, fft_frequencies = imp.get_frequency_spectrum(eeg_epochs, fs)
+
+    # Find indices of target frequencies
+    index_12hz = np.argmin(np.abs(fft_frequencies - 12))
+    index_15hz = np.argmin(np.abs(fft_frequencies - 15))
+
+    # Select channel
+    channel_index = np.where(data['channels'] == channel)[0][0]
+
+    # Separate epochs based on predicted labels
+    predicted_labels = generate_predicted_labels(data, epoch_start_time, epoch_end_time, channel)
+    predictor_12hz = []
+    predictor_15hz = []
+
+    for i, label in enumerate(predicted_labels):
+        predictor_value = np.abs(eeg_epochs_fft[i, channel_index, index_15hz] - eeg_epochs_fft[i, channel_index,
+                                                                                               index_12hz])
+        if label == '12hz':
+            predictor_12hz.append(predictor_value)
+        else:
+            predictor_15hz.append(predictor_value)
+
+    # Plot histograms for each trial type
+    plt.figure()
+    plt.hist(predictor_12hz, histtype='barstacked', bins=20, color='c', edgecolor='black', label='12Hz Trials')
+    plt.hist(predictor_15hz, histtype='barstacked', bins=20, color='m', edgecolor='black', label='15Hz Trials')
+    plt.title('Predictor Histogram')
+    plt.xlabel('Predictor Variable')
+    plt.ylabel('Frequency')
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.show()
     
     
  
