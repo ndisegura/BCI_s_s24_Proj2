@@ -62,7 +62,10 @@ prd.generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time)
 
 #%%
 # PartE: Create Predictor Histogram
-
+epoch_start_time = 7.5
+epoch_end_time = 17
+channel = 'Oz'
+prd.plot_predictor_histogram(data, epoch_start_time, epoch_end_time, channel)
 
 
 
