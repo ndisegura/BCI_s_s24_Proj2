@@ -136,9 +136,9 @@ def loop_epoch_limits(data,epoch_start_time_limit=0, epoch_end_time_limit=20, st
         channel (str, optional): Name of the EEG channel. Defaults to 'Oz'.
 
     Returns:
-        array: Accuracy matrix whose size depends on the epoch start, end time and step.
-        array: ITR matrix whose size depends on the epoch start, end time and step.
-        array: Array of size 1xN of epoch times.
+        accuracy_matrix (numpy array of size K x K ): Matrix of accuracy values.
+        ITR_matrix (numpy array of size K x K): Matrix of ITR values.
+        loop_epoch_time (numpy array of size 1xN): Array of epoch times.
     """
     
     matrix_size=int((epoch_end_time_limit-epoch_start_time_limit)/step)
@@ -186,23 +186,21 @@ def generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time):
     Returns:
         None
     """
-    
+    #Create figure and subplot handles
     fig, (ax0,ax1) = plt.subplots(1,2)
     alpha_val = 0.8
+    
     
     ax0.set_title('Accuracy')
     accuracy_plot=ax0.imshow(accuracy_matrix*100,alpha=alpha_val,aspect=1, extent=[loop_epoch_time[0], loop_epoch_time[-1],loop_epoch_time[0], loop_epoch_time[-1]])
     #cax = fig.add_axes([ax0.get_position().x1+0.01,ax0.get_position().y0,0.02,ax0.get_position().height])
     cbar=fig.colorbar(accuracy_plot,ax=ax0,location='right',shrink=0.5)
-    #cbar=plt.colorbar(accuracy_plot,ax=cax)
     ax0.set_xlabel('Epoch end time [s]')
     ax0.set_ylabel('Epoch start time [s]')
     cbar.ax.set_ylabel('% correct', rotation=270)
     
     ax1.set_title('ITR')
     ITR_plot=ax1.imshow(ITR_matrix,alpha=alpha_val,aspect=1, extent=[loop_epoch_time[0], loop_epoch_time[-1],loop_epoch_time[0], loop_epoch_time[-1]])
-    #cax = fig.add_axes([ax1.get_position().x1+0.01,ax1.get_position().y0,0.02,ax1.get_position().height])
-    #cbar=fig.colorbar(ITR_plot,ax=cax)
     cbar=fig.colorbar(ITR_plot,ax=ax1,location='right',shrink=0.5)
     ax1.set_xlabel('Epoch end time [s]')
     ax1.set_ylabel('Epoch start time [s]')

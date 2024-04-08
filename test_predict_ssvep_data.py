@@ -33,11 +33,6 @@ data = imp.load_ssvep_data(subject, data_directory)
 # Epoch subject data
 epoch_start_time =0
 epoch_end_time =20
-#eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data,epoch_start_time,epoch_end_time)
-
-# # Get epoched fft data
-# fs = data['fs']
-# eeg_epochs_fft, fft_frequencies = imp.get_frequency_spectrum(eeg_epochs, fs)
 
 # Generate predicted labels
 #Changed function argument so that we can reuse this function in part C. Also added "channel" argument. Need to fix functin to handle multiple channel. Using just one for now
@@ -56,7 +51,7 @@ print(ITR)
 
 #%%
 # PartC: Loop Through Epoch Limits
-accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=20, step=0.5, channel='Oz') 
+accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=18, step=1.0, channel='T7') 
 print(accuracy_matrix)
 print(ITR_matrix)
 
