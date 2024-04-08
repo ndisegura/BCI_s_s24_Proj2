@@ -6,10 +6,11 @@ Dr. David Jangraw
 
 UPDATE Module Description:
 
-example description:
+
 This module provides functions to process Steady State Visual Evoked Potential signals.
-The module generates FIR filter taps, convolves (filters) the selected data and plots the signals
-at the various stages
+The module will analyze the SSVEP data, generate predicted labels, compute accuracy and
+information tranfer rate. The module also implements function to plot a confusion matrix
+for accuracy and ITRgenerates, and predictor histograms.
 """
 
 # Import Statements
@@ -23,11 +24,35 @@ import import_ssvep_data as imp
 
 
 def find_nearest_frequency_index(frequencies, target_frequency):
+    """
+    Find the index of the frequency closest to the target frequency.
+
+    Parameters:
+        frequencies (array): Array of frequencies.
+        target_frequency (float): Target frequency.
+
+    Returns:
+        int: Index of the frequency closest to the target frequency.
+    """
     # Find the index of the frequency closest to the target frequency
     return np.argmin(np.abs(frequencies - target_frequency))
 
 
 def generate_predicted_labels(data,epoch_start_time,epoch_end_time, channel='Oz'):#eeg_epochs_fft, fft_frequencies):
+    """
+    Generate predicted labels for SSVEP data. The function will epoch the SSVEP data based on the start and end time 
+    specified in the function arguments, compute the FFT spectrum of the data across channels, and will compare 
+    the amplitude of frequencies at 12hz and 15hz for the selected channel. The highest amplitude is selected as the predicted label.
+
+    Parameters:
+        data (dict): Dictionary containing EEG data.
+        epoch_start_time (float): Start time of the epoch in seconds.
+        epoch_end_time (float): End time of the epoch in seconds.
+        channel (str, optional): Name of the EEG channel. Defaults to 'Oz'.
+
+    Returns:
+        predicted_labels: List of predicted labels of size T (number of trials)
+    """
     
     #Epoch Data first
     eeg_epochs, epoch_times, is_trial_15Hz = imp.epoch_ssvep_data(data,epoch_start_time,epoch_end_time)
@@ -71,6 +96,19 @@ def generate_predicted_labels(data,epoch_start_time,epoch_end_time, channel='Oz'
     return predicted_labels
 
 def get_accuracy_ITR(data,event_types,predicted_event):
+    """
+    Function to calculate accuracy and Information Transfer Rate (ITR).
+    
+
+    Parameters:
+        data (dict): Dictionary containing EEG data.
+        event_types (numpy array of str of size C, the number of channels): Array of true event types.
+        predicted_event (numpy array of str of size C): Array of predicted event types.
+
+    Returns:
+        float: Accuracy.
+        float: Information Transfer Rate (ITR).
+    """
     
     N=2 #There are only 2 clases
     #Compute accuracy
@@ -87,6 +125,21 @@ def get_accuracy_ITR(data,event_types,predicted_event):
     return P,ITR_second
 
 def loop_epoch_limits(data,epoch_start_time_limit=0, epoch_end_time_limit=20, step=0.1, channel='Oz'):
+    """
+    Loop through different epoch start and end times to compute accuracy and ITR.
+
+    Parameters:
+        data (dict): Dictionary containing EEG data.
+        epoch_start_time_limit (float, optional): Lower limit of epoch start time in seconds. Defaults to 0.
+        epoch_end_time_limit (float, optional): Upper limit of epoch end time in seconds. Defaults to 20.
+        step (float, optional): Step size for epoch start and end times. Defaults to 0.1.
+        channel (str, optional): Name of the EEG channel. Defaults to 'Oz'.
+
+    Returns:
+        array: Accuracy matrix whose size depends on the epoch start, end time and step.
+        array: ITR matrix whose size depends on the epoch start, end time and step.
+        array: Array of size 1xN of epoch times.
+    """
     
     matrix_size=int((epoch_end_time_limit-epoch_start_time_limit)/step)
     accuracy_matrix=np.zeros(shape=(matrix_size,matrix_size),dtype=float)
@@ -122,6 +175,17 @@ def loop_epoch_limits(data,epoch_start_time_limit=0, epoch_end_time_limit=20, st
     return accuracy_matrix[::-1],ITR_matrix[::-1],loop_epoch_time
 
 def generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time):
+    """
+    Generate pseudocolor plots for accuracy and ITR at various epoch limits
+
+    Parameters:
+        accuracy_matrix (numpy array of size K x K ): Matrix of accuracy values.
+        ITR_matrix (numpy array of size K x K): Matrix of ITR values.
+        loop_epoch_time (numpy array of size 1xN): Array of epoch times.
+
+    Returns:
+        None
+    """
     
     fig, (ax0,ax1) = plt.subplots(1,2)
     alpha_val = 0.8
@@ -142,8 +206,10 @@ def generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time):
     cbar=fig.colorbar(ITR_plot,ax=ax1,location='right',shrink=0.5)
     ax1.set_xlabel('Epoch end time [s]')
     ax1.set_ylabel('Epoch start time [s]')
-    cbar.ax.set_ylabel('ITR (bits/s)', rotation=270)
+    cbar.ax.set_ylabel('Information Transfer Rate (bits/s)', rotation=270)
     plt.tight_layout()
+    
+    return
     
     
     

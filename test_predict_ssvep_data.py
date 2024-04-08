@@ -1,16 +1,12 @@
 """
-Andres Segura & Aiden Pricer_Coen
+Andres Segura & Aiden Pricer-Coen
 BME 6770: BCI's Project 02
 Dr. David Jangraw
 4/9/2024
 
-Test scrip for the implementation of the predict_ssvep_data module. This script ...
-
-e.g. description of test module: loads the data from the data dictionary, followed by the design of two bandpass FIR
-filters centered around 12hz and 15hz. The filter taps are then used to convolve it with the EEG data contained in
-the "data" dictionary. A Hilbert transform extracts the envelope of the oscillatory signals, then the envelope and
-the event types are plotted on a single graph. As a final step, the power spectrum of the raw EEG , filtered and
-envelope is plotted for the 'Oz" and 'Fz' EEG channels.
+Test scrip for the implementation of the predict_ssvep_data module. This script consist of 5 major sections.
+The test module will load the SSVEP from the data dictionary and create a string array with the predicted labels.
+figures of merit are then computed for different epoch start and end times,
 """
 
 # Import the necessary modules
@@ -60,7 +56,7 @@ print(ITR)
 
 #%%
 # PartC: Loop Through Epoch Limits
-accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=20, step=2.0, channel='Oz') 
+accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=20, step=0.5, channel='Oz') 
 print(accuracy_matrix)
 print(ITR_matrix)
 
