@@ -24,48 +24,41 @@ plt.close('all')
 # Build data file string
 data_directory = './SsvepData/'
 subject = 1
-#%%
+
 # PartA: Generate Predictions
 
 # Load subject data
 data = imp.load_ssvep_data(subject, data_directory)
 
 # Epoch subject data
-epoch_start_time =0
-epoch_end_time =20
+epoch_start_time = 0
+epoch_end_time = 20
 
-# Generate predicted labels
-#Changed function argument so that we can reuse this function in part C. Also added "channel" argument. Need to fix functin to handle multiple channel. Using just one for now
-predicted_labels = prd.generate_predicted_labels(data,epoch_start_time,epoch_end_time, 'Oz') 
+# Generate predicted labels 
+predicted_labels = prd.generate_predicted_labels(data, epoch_start_time, epoch_end_time, 'Oz')
 
 print(predicted_labels)
 
-#%%
 # PartB: Calculate Accuracy and ITR
 
-event_types=data['event_types']
+event_types = data['event_types']
 
-accuracy,ITR=prd.get_accuracy_ITR(data,event_types,predicted_labels)
-print(accuracy)
-print(ITR)
+accuracy, ITR = prd.get_accuracy_ITR(data, event_types, predicted_labels)
 
-#%%
 # PartC: Loop Through Epoch Limits
-accuracy_matrix,ITR_matrix,loop_epoch_time=prd.loop_epoch_limits(data, epoch_start_time_limit=5, epoch_end_time_limit=18, step=1.0, channel='T7') 
-print(accuracy_matrix)
-print(ITR_matrix)
 
-#%%
+accuracy_matrix, ITR_matrix, loop_epoch_time = prd.loop_epoch_limits(data, epoch_start_time_limit=5, 
+                                                                     epoch_end_time_limit=18, step=1.0, channel='T7')
+
 # PartD: Plot results
 
 prd.generate_pseudocolor_plots(accuracy_matrix,ITR_matrix,loop_epoch_time)
 
-#%%
 # PartE: Create Predictor Histogram
+
 epoch_start_time = 7.5
 epoch_end_time = 17
 channel = 'Oz'
 prd.plot_predictor_histogram(data, epoch_start_time, epoch_end_time, channel)
-
 
 
